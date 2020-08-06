@@ -8,9 +8,23 @@ const modelName = 'category';
 //create category
 router.post('/', async (req, res) => {
     try {
-        console.log(req.body);
-        await db[modelName].create(req.body)
-        res.sendStatus(200);
+        let name = req.body.name;
+        name = String(name).trim();
+        //is category name already exists
+        const isProduct = await db[modelName].findOne(
+            {
+                where: {
+                    name: name
+                },
+                raw: true
+            }
+        )
+        if (isProduct) {
+            res.sendStatus(422)
+        } else {
+            await db[modelName].create(req.body);
+            res.sendStatus(200);
+        }
     } catch (error) {
         res.sendStatus(500);
     }

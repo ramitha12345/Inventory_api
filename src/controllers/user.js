@@ -8,9 +8,22 @@ const modelName = 'user';
 //create user
 router.post('/', async (req, res) => {
     try {
-        console.log(req.body);
-        await db[modelName].create(req.body)
-        res.sendStatus(200);
+        let nic = req.body.nic;
+        //check nic already existed
+        const isProduct = await db[modelName].findOne(
+            {
+                where: {
+                    nic: nic
+                },
+                raw: true
+            }
+        )
+        if (isProduct) {
+            res.sendStatus(422)
+        } else {
+            await db[modelName].create(req.body);
+            res.sendStatus(200);
+        }
     } catch (error) {
         res.sendStatus(500);
     }
@@ -20,7 +33,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const data = await db[modelName].findAll(
-            // { raw: true }
+            { attributes: { exclude: ['password'] } }
         );
         // data.forEach(element => {
         //     if (element.gender) {
