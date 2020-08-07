@@ -1,8 +1,10 @@
 //import the framework
+
 const express = require('express');
 
 const app = express();
-
+const morgan = require('morgan');
+app.use(morgan('dev'));
 const port = 4000;
 
 const bodyParser = require('body-parser');
