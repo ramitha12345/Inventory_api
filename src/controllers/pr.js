@@ -42,7 +42,7 @@ router.post('/', checkAuth, async (req, res) => {
 });
 
 //Retrieve one pr detail from DB
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuth, async (req, res) => {
     try {
         const id = req.params.id;
         //db simulation

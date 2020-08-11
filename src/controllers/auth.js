@@ -8,7 +8,7 @@ const db = require('../../models');
 //const modelName = 'auth';
 
 //create auth
-router.post('/register',async (req, res) => {
+router.post('/register', checkAuth, async (req, res) => {
     try {
         const { firstName, lastName, role } = req.body;
         let { email, password } = req.body;

@@ -6,7 +6,7 @@ const db = require('../../models');
 const modelName = 'product';
 
 //create product
-router.post('/', async (req, res) => {
+router.post('/', checkAuth, async (req, res) => {
     try {
         let name = req.body.name;
         name = String(name).trim();
@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
 });
 
 //Retrieve all the product from DB
-router.get('/', async (req, res) => {
+router.get('/', checkAuth, async (req, res) => {
     try {
         const data = await db[modelName].findAll(
             { raw: true }
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
 });
 
 //Retrieve one product from DB
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuth, async (req, res) => {
     try {
         const id = req.params.id;
         //db simulation
@@ -78,7 +78,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //Update product(delete product)
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuth, async (req, res) => {
     try {
         const id = req.params.id;
         await db[modelName].update(req.body, {

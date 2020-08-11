@@ -6,7 +6,7 @@ const db = require('../../models');
 const modelName = 'user';
 
 //create user
-router.post('/', async (req, res) => {
+router.post('/', checkAuth, async (req, res) => {
     try {
         let nic = req.body.nic;
         //check nic already existed
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 });
 
 //Retrieve all the user from DB
-router.get('/', async (req, res) => {
+router.get('/', checkAuth, async (req, res) => {
     try {
         const data = await db[modelName].findAll(
             { attributes: { exclude: ['password'] } }
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 });
 
 //Retrieve one user from DB
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuth, async (req, res) => {
     try {
         const id = req.params.id;
         //db simulation
@@ -68,7 +68,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //Update user(delete user)
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuth, async (req, res) => {
     try {
         const id = req.params.id;
         await db[modelName].update(req.body, {
