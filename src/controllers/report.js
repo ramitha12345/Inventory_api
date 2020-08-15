@@ -18,7 +18,6 @@ router.post('/reorderLevel', async (req, res) => {
         const data = await db.sequelize.query(query,
             {
                 type: db.sequelize.QueryTypes.SELECT,
-                logging: console.log()
             });
         res.status(200).json(data);
     } catch (error) {

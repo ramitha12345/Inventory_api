@@ -18,6 +18,38 @@ router.post('/', checkAuth, async (req, res) => {
 });
 
 //Retrieve all the customers from DB
+router.get('/cus', checkAuth, async (req, res) => {
+    try {
+        const data = await db[modelName].findAll(
+            {
+                where: {
+                    isSupplier: false,
+                },
+            }
+        );
+        res.status(200).json(data);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+});
+
+//Retrieve all the customers from DB
+router.get('/sup', checkAuth, async (req, res) => {
+    try {
+        const data = await db[modelName].findAll(
+            {
+                where: {
+                    isSupplier: true,
+                },
+            }
+        );
+        res.status(200).json(data);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+});
+
+//Retrieve all the customers from DB
 router.get('/', checkAuth, async (req, res) => {
     try {
         const data = await db[modelName].findAll();

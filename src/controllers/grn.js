@@ -43,6 +43,35 @@ router.post('/', checkAuth, async (req, res) => {
     }
 });
 
+
+router.get('/util', checkAuth, async (req, res) => {
+    try {
+        const suppliers = await db.customer.findAll(
+            {
+                where: {
+                    isSupplier: true,
+                    status: true
+                },
+                raw: true
+            }
+        );
+        suppliers.forEach(e => {
+            e.fullName = e.firstName + " " + e.lastName;
+        })
+        const products = await db.product.findAll(
+            {
+                where: {
+                    status: true
+                }
+            }
+        );
+        //db simulation
+        res.status(200).json({ suppliers, products });
+    } catch (error) {
+        res.sendStatus(500);
+    }
+});
+
 //Retrieve one drn detail from DB
 router.get('/:id', checkAuth, async (req, res) => {
     try {
@@ -89,5 +118,7 @@ router.get('/', checkAuth, async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+
 
 module.exports = router;
