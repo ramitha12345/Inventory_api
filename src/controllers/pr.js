@@ -5,10 +5,11 @@ const db = require('../../models');
 const { request } = require('express');
 
 router.post('/', checkAuth, async (req, res) => {
+    const transaction = await db.sequelize.transaction();
     try {
         const productsList = req.body.productsList;
         // first insert to pr_masters table
-        const data = await db.pr_master.create({ grnId: req.body.grnId })
+        const data = await db.pr_master.create({ grnId: req.body.grnId }, { transaction })
         //console.log(data)
         //console.log('*************************************')
         //console.log(data.dataValues)
@@ -19,7 +20,7 @@ router.post('/', checkAuth, async (req, res) => {
             element.prId = data.dataValues.id;
         });
         // then insert to pr_details
-        await db.pr_detail.bulkCreate(productsList);
+        await db.pr_detail.bulkCreate(productsList, { transaction });
         // then update products table qty column
         for (const element of productsList) {
             await db.product.update(
@@ -30,13 +31,15 @@ router.post('/', checkAuth, async (req, res) => {
                     where: {
                         id: element.productId,
                     },
-
+                    transaction
                 }
             );
         }
+        await transaction.commit();
         res.sendStatus(200)
     } catch (error) {
         //console.log('**1111***********', error);
+        await transaction.rollback();
         res.sendStatus(500);
     }
 });

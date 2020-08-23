@@ -7,6 +7,7 @@ const modelName = 'user';
 
 //create user
 router.post('/', checkAuth, async (req, res) => {
+    const transaction = await db.sequelize.transaction();
     try {
         let nic = req.body.nic;
         //check nic already existed
@@ -19,12 +20,15 @@ router.post('/', checkAuth, async (req, res) => {
             }
         )
         if (isProduct) {
+            await transaction.rollback();
             res.sendStatus(422)
         } else {
-            await db[modelName].create(req.body);
+            await db[modelName].create(req.body, { transaction });
+            await transaction.commit();
             res.sendStatus(200);
         }
     } catch (error) {
+        await transaction.rollback();
         res.sendStatus(500);
     }
 });
@@ -69,15 +73,19 @@ router.get('/:id', checkAuth, async (req, res) => {
 
 //Update user(delete user)
 router.put('/:id', checkAuth, async (req, res) => {
+    const transaction = await db.sequelize.transaction();
     try {
         const id = req.params.id;
         await db[modelName].update(req.body, {
             where: {
                 id
-            }
+            },
+            transaction
         });
+        await transaction.commit();
         res.sendStatus(200);
     } catch (error) {
+        await transaction.rollback();
         res.sendStatus(500);
     }
 })

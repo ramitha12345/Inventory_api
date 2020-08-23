@@ -9,8 +9,9 @@ const db = require('../../models');
 
 //create auth
 router.post('/register', checkAuth, async (req, res) => {
+    const transaction = await db.sequelize.transaction();
     try {
-        const { firstName, lastName, role } = req.body;
+        const { firstName, lastName, role, nic, gender } = req.body;
         let { email, password } = req.body;
 
         email = String(email).trim().toLowerCase();
@@ -26,20 +27,27 @@ router.post('/register', checkAuth, async (req, res) => {
             }
         )
         if (isEmail) {
+            await transaction.rollback();
             res.sendStatus(422)
         } else {
-            await db.user.create({
-                firstName,
-                lastName,
-                role,
-                email,
-                password,
-            })
+            await db.user.create(
+                {
+                    firstName,
+                    lastName,
+                    role,
+                    nic,
+                    gender,
+                    email,
+                    password,
+                }, { transaction }
+            )
+            await transaction.commit();
             res.sendStatus(200);
         }
         //console.log("*******", isEmail)
 
     } catch (error) {
+        await transaction.rollback();
         res.sendStatus(500);
     }
 });
