@@ -44,6 +44,34 @@ router.post('/', checkAuth, async (req, res) => {
     }
 });
 
+router.get('/util', checkAuth, async (req, res) => {
+    try {
+        const customers = await db.customer.findAll(
+            {
+                where: {
+                    isSupplier: false,
+                    status: true
+                },
+                raw: true
+            }
+        );
+        customers.forEach(e => {
+            e.fullName = e.firstName + " " + e.lastName;
+        })
+        const products = await db.product.findAll(
+            {
+                where: {
+                    status: true
+                }
+            }
+        );
+        //db simulation
+        res.status(200).json({ customers, products });
+    } catch (error) {
+        res.sendStatus(500);
+    }
+});
+
 //Retrieve one invoice details from DB
 router.get('/:id', checkAuth, async (req, res) => {
     try {
@@ -81,9 +109,14 @@ router.get('/', checkAuth, async (req, res) => {
                     model: db.customer,
                     required: true
                 }
-                ]
+                ],
+                raw: true
             }
         );
+        data.forEach(e => {
+            //console.log(e)
+            e.fullName = e["customer.firstName"] + " " + e["customer.lastName"];
+        })
         //db simulation
         res.status(200).json(data);
     } catch (error) {

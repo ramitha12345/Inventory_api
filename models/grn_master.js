@@ -1,3 +1,4 @@
+const moment = require("moment");
 'use strict';
 const {
   Model
@@ -32,6 +33,20 @@ module.exports = (sequelize, DataTypes) => {
     isReturn: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    createdDate: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        const date = moment(this.getDataValue('createdAt')).format('YYYY-MM-DD');
+        return date;
+      },
+    },
+    purchaseReturned: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        const name = `${this.getDataValue('isReturn') === true ? 'Returned' : 'No'}`;
+        return name;
+      },
     },
   }, {
     sequelize,
