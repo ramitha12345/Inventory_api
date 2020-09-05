@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class customer extends Model {
     /**
@@ -12,37 +10,51 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  customer.init({
-    title: {
-      type: DataTypes.STRING
+  }
+  customer.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+      },
+      firstName: {
+        type: DataTypes.STRING,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+      },
+      email: {
+        type: DataTypes.STRING,
+      },
+      contactNumber: {
+        type: DataTypes.STRING,
+      },
+      address: {
+        type: DataTypes.STRING,
+      },
+      isSupplier: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
+      fullName: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const name =
+            this.getDataValue("title") +
+            " " +
+            this.getDataValue("firstName") +
+            this.getDataValue("lastName");
+            return name;
+        },
+      },
     },
-    firstName: {
-      type: DataTypes.STRING
-    },
-    lastName: {
-      type: DataTypes.STRING
-    },
-    email: {
-      type: DataTypes.STRING
-    },
-    contactNumber: {
-      type: DataTypes.STRING
-    },
-    address: {
-      type: DataTypes.STRING
-    },
-    isSupplier: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    status: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-  }, {
-    sequelize,
-    modelName: 'customer',
-  });
+    {
+      sequelize,
+      modelName: "customer",
+    }
+  );
   return customer;
 };
