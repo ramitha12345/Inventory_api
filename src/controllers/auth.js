@@ -83,7 +83,8 @@ router.post('/login', async (req, res) => {
             );
             res.status(200).json({
                 token,
-                role: isEmail.role
+                role: isEmail.role,
+                name:'ramitha'
             });
 
         } else {
