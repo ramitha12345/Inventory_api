@@ -40,6 +40,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        const name = this.getDataValue('title') + " " + this.getDataValue('firstName') + " " + this.getDataValue('lastName');
+        return name;
+      },
+    }
   }, {
     sequelize,
     modelName: 'customer',

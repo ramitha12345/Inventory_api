@@ -110,17 +110,18 @@ router.get('/', checkAuth, async (req, res) => {
             {
                 include: [{
                     model: db.customer,
+                    // attribute
                     required: true,
                 }
                 ],
-                raw: true
+                //raw: true
             }
         );
         //console.log(data)
-        data.forEach(e => {
-            //console.log(e)
-            e.fullName = e["customer.firstName"] + " " + e["customer.lastName"];
-        })
+        // data.forEach(e => {
+        //     //console.log(e)
+        //     e.fullName = e["customer.firstName"] + " " + e["customer.lastName"];
+        // })
         //db simulation
         res.status(200).json(data);
     } catch (error) {
