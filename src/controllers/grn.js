@@ -78,6 +78,7 @@ router.get("/util", checkAuth, async (req, res) => {
     //db simulation
     res.status(200).json({ suppliers, products });
   } catch (error) {
+      //console.log(error);
     res.sendStatus(500);
   }
 });
