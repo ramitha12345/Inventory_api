@@ -92,6 +92,7 @@ router.post('/login', async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error)
         res.sendStatus(500);
     }
 });

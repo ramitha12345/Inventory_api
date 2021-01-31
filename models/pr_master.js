@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
         pr_master.hasMany(models.pr_detail,{foreignKey:'prId'});
+        pr_master.belongsTo(models.grn_master,{foreignKey:'grnId'});
+
     }
   };
   pr_master.init({
