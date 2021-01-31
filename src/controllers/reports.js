@@ -118,18 +118,9 @@ router.post('/product', async (req, res) => {
 router.get('/stock', async (req, res) => {
   try {
     const query = `SELECT 
-    items.name,
-    SUM(Stocks.qty) AS qty,
-    categories.name AS category
+    name, reorderLevel, qty
 FROM
-    inventory.Stocks
-        INNER JOIN
-    items ON Stocks.item_id = items.id
-        INNER JOIN
-    categories ON items.categoryId = categories.id
-WHERE
-    qty > 0
-GROUP BY Stocks.item_id`;
+    products`;
 
     const data = await db.sequelize.query(query, {
       type: db.sequelize.QueryTypes.SELECT,
@@ -242,7 +233,7 @@ router.post('/invoice', async (req, res) => {
     const data = req.body;
     const from = new Date(data.from);
     const to = new Date(data.to);
-    to.setDate(to.getDate() + 1)
+    to.setDate(to.getDate() + 1);
 
     const preparedQuery = {
       include: [
@@ -258,7 +249,7 @@ router.post('/invoice', async (req, res) => {
     if (!data.is_all_dates) {
       preparedQuery.where = {};
       preparedQuery.where.createdAt = {
-        [Op.between]:[from,to]
+        [Op.between]: [from, to],
       };
       // preparedQuery.where.createdAt.$between = [];
       // preparedQuery.where.createdAt.$between.push(data.from);
@@ -271,7 +262,7 @@ router.post('/invoice', async (req, res) => {
       data,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.sendStatus(500);
   }
 });
@@ -282,7 +273,7 @@ router.post('/pr', async (req, res) => {
 
     const from = new Date(data.from);
     const to = new Date(data.to);
-    to.setDate(to.getDate() + 1)
+    to.setDate(to.getDate() + 1);
 
     const preparedQuery = {
       include: [
@@ -295,7 +286,7 @@ router.post('/pr', async (req, res) => {
           ],
         },
       ],
-      logging:console.log
+      logging: console.log,
     };
     if (!data.is_all_suppliers) {
       preparedQuery.include[0].include[0].where = {};
@@ -304,7 +295,7 @@ router.post('/pr', async (req, res) => {
     if (!data.is_all_dates) {
       preparedQuery.where = {};
       preparedQuery.where.createdAt = {
-        [Op.between]:[from,to]
+        [Op.between]: [from, to],
       };
       // preparedQuery.where.createdAt.$between = [];
       // preparedQuery.where.createdAt.$between.push(data.from);
@@ -317,7 +308,7 @@ router.post('/pr', async (req, res) => {
       data,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.sendStatus(500);
   }
 });
@@ -328,8 +319,7 @@ router.post('/grn', async (req, res) => {
 
     const from = new Date(data.from);
     const to = new Date(data.to);
-    to.setDate(to.getDate() + 1)
-
+    to.setDate(to.getDate() + 1);
 
     const preparedQuery = {
       include: [
@@ -345,18 +335,14 @@ router.post('/grn', async (req, res) => {
     }
     if (!data.is_all_dates) {
       preparedQuery.where = {};
-     
+
       // preparedQuery.where.createdAt.$between = [];
       // preparedQuery.where.createdAt.$between.push(from);
       // preparedQuery.where.createdAt.$between.push(to);
 
-      preparedQuery.where.createdAt={
-        [Op.between]:[from,to]
-      }
-
-
-
-     
+      preparedQuery.where.createdAt = {
+        [Op.between]: [from, to],
+      };
     }
 
     const data2 = await db.grn_master.findAll(preparedQuery);
@@ -366,7 +352,7 @@ router.post('/grn', async (req, res) => {
       data,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.sendStatus(500);
   }
 });
